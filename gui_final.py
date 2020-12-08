@@ -17,11 +17,47 @@ import numpy as np
 import functools
 import os
 import io
-from twitter_scraper import get_tweets, get_trends
+#from twitter_scraper import get_tweets
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QApplication
 from requests_html import HTML, HTMLSession
 from langdetect import detect
+
+import tweepy 
+import json
+
+#configuring twitter  api
+consumerKey = "WL9qLoAs3iITSoA0Ywk0P3HlS" 
+consumerSecret = "rzZMPzjsLqFu92IVOJjjIJBeEEgNE9XyrC1ynp9jN2RsiV3fDa" 
+accessToken = "1120882257118420992-moWBx8bFzxYKU83Z6Ozkwpub9Y2Km9" 
+accessTokenSecret = "TY4qwgQ8MDNpfqDYGh4fTwNYOaSf31HbWtDp9Datp2iLP" 
+ 
+auth = tweepy.OAuthHandler(consumerKey, consumerSecret) 
+auth.set_access_token(accessToken, accessTokenSecret) 
+api = tweepy.API(auth) 
+india_trends = api.trends_place(2282863)
+
+#print(json.dumps(india_trends, indent=4))
+
+
+def get_trends():
+    india_trends_set = set([trend['name'] 
+                        for trend in india_trends[0]['trends']])
+    
+    #set to list
+    india_trends_list = list(india_trends_set) 
+    return india_trends_list
+
+def get_tweets(tag):
+    q = tag
+    date_since = "2020-12-7"
+    tweets = tweepy.Cursor(api.search,
+                q=q,
+                lang="en",
+                since=date_since).items(100)
+    return tweets
+
+
 
 
 class Ui_MiniProject(object):
@@ -247,8 +283,8 @@ class Ui_MiniProject(object):
         mean = 0
         total = 0
         self.textBrowser.setText("tweets-----------------")
-        for tweet in get_tweets(tag, pages=1):
-            text = tweet['text']
+        for tweet in get_tweets(tag):
+            text = tweet.text
             mline = clean_tweet(text)
             nline = mline.replace("," , "").replace("." , "").replace(")" , "").replace("(" , "").replace(";" , "").replace(":" , "").replace("\"" , " ").strip().split(" ")
             encode = review_encode(nline)
@@ -260,10 +296,6 @@ class Ui_MiniProject(object):
                 mean = mean + 100
             if listtostr.lower().find("congratulations") == True:
                 mean = mean + 100
-            #print(line)
-            #print(mline)
-            #print(encode)
-            #print(predict[0])
             mean = ( mean + predict[0])
             total = total + 1
         try:
