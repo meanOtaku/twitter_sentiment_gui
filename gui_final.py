@@ -27,10 +27,10 @@ import tweepy
 import json
 
 #configuring twitter  api
-consumerKey = "WL9qLoAs3iITSoA0Ywk0P3HlS" 
-consumerSecret = "rzZMPzjsLqFu92IVOJjjIJBeEEgNE9XyrC1ynp9jN2RsiV3fDa" 
-accessToken = "1120882257118420992-moWBx8bFzxYKU83Z6Ozkwpub9Y2Km9" 
-accessTokenSecret = "TY4qwgQ8MDNpfqDYGh4fTwNYOaSf31HbWtDp9Datp2iLP" 
+consumerKey = "" 
+consumerSecret = "" 
+accessToken = "" 
+accessTokenSecret = "" 
  
 auth = tweepy.OAuthHandler(consumerKey, consumerSecret) 
 auth.set_access_token(accessToken, accessTokenSecret) 
